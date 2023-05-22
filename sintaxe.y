@@ -6,7 +6,7 @@
 %token NUM
 %token ID
 
-%token IF ELSE WHILE FOR RETURN
+%token IF ELSE WHILE FOR RETURN VOID EXTERN
 %token INTCON CHARCON STRINGCON
 
 /* procedencias */
@@ -23,6 +23,7 @@
 
 /*
 input:    /* empty */
+/*
         | input line
 ;
 line:     '\n'
@@ -42,6 +43,39 @@ exp:		NUM				{;}
 
 */
 
+prog	:	dcl ';'  |  func        {;}
+dcl	:	type var_decl { ',' var_decl }
+ 	|	type ID '(' parm_types ')' rep_dcl
+        |       EXTERN type ID '(' parm_types ')' rep_dcl
+ 	|	VOID ID '(' parm_types ')' rep_dcl
+ 	|	EXTERN VOID ID '(' parm_types ')' rep_dcl
+rep_dcl :       
+        |       ',' ID '(' parm_types ')'
+        |       rep_dcl
+var_decl:	ID '[' INTCON ']'
+        |       ID
+
+type	:	CHARCON
+ 	|	INTCON
+parm_types	:	VOID
+ 	|	type ID '[' ']' rep_parm_types
+        |       type ID rep_parm_types
+rep_parm_types  :
+        | ',' type ID
+        | ',' type ID '[' ']'
+        | rep_parm_types
+func	:	type ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}'
+ 	|	VOID ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}'
+rep_func_var_decl:
+        |       type var_decl rep_var_decl ';'
+        |       rep_func_var_decl
+rep_var_decl:
+        | ',' var_decl 
+        | rep_var_decl
+stmt_rep:
+        | stmt
+        | stmt_rep
+/* corrigir casos de {} e [] */
 stmt:   IF '(' expr ')' stmt ELSE stmt              {;}
         | WHILE '(' expr ')' stmt                   {;}
         | FOR '(' assg ';' expr ';' assg ')' stmt   {;}
