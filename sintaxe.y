@@ -75,26 +75,43 @@ rep_var_decl:
 stmt_rep:
         | stmt
         | stmt_rep
-/* corrigir casos de {} e [] */
-stmt:   IF '(' expr ')' stmt ELSE stmt              {;}
-        | WHILE '(' expr ')' stmt                   {;}
-        | FOR '(' assg ';' expr ';' assg ')' stmt   {;}
-        | RETURN expr ';'                           {;}
-        | assg ';'                                  {;}
-        | ID '(' expr ',' expr ')' ';'              {;}
-        | '{' stmt '}'                              {;}
-        | ';'                                       {;}
+
+stmt:   IF '(' expr ')' stmt ELSE stmt                          {;}
+        | IF '(' expr ')' stmt                                  {;}
+        | WHILE '(' expr ')' stmt                               {;}
+        | FOR '(' assg_op ';' expr_op ';' assg_op ')' stmt      {;}
+        | RETURN expr_op ';'                                    {;}
+        | assg ';'                                              {;}
+        | ID '(' expr expr_rep ')' ';'                          {;}
+        | ID '(' ')' ';'                                        {;}
+        | '{' stmt_rep '}'                                      {;}
+        | ';'                                                   {;}
 ;
 
-assg:   ID '[' expr ']' '=' expr    {;};
+assg_op: assg
+        | VOID
+;
+
+expr_op: expr
+        | VOID
+;
+
+expr_rep: ',' expr
+        | expr_rep
+;
+
+assg:   ID '[' expr ']' '=' expr    {;}
+        | ID '=' expr               {;}
+;
 
 expr:   '-' expr                    {;}
         | '!' expr                  {;}
         | expr binop expr           {;}
         | expr relop expr           {;}
         | expr logical_op expr      {;}
-        | ID '(' expr ',' expr ')'  {;}
+        | ID '(' expr expr_rep ')'  {;}
         | ID '[' expr ']'           {;}
+        | ID                        {;}
         | '(' expr ')'              {;}
         | INTCON                    {;}
         | CHARCON                   {;}
