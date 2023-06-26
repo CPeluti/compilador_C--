@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "sintaxe.tab.h"
 %}
 letra	[a-zA-Z]
 digito 	[0-9]
@@ -10,20 +11,18 @@ stringcon \"(\\.|[^"\\])*\"
 comentario (\/\*).*(\*\/)
 
 %%
-{id}		{printf("Id\n");}
-{intcon}	{printf("intcon\n");}
-{charcon}	{printf("charcon\n");}
-{stringcon}	{printf("stringcon\n");}
-{comentario}	{printf("comentario\n");}
+"CHAR"	{strcpy(yylval.id, yytext); return CHAR;}
+"INT"	{strcpy(yylval.id, yytext); return INT;}
+{id}		{strcpy(yylval.id, yytext); return ID;}
+{stringcon}	{return STRINGCON;}
+{intcon} {yylval.intcon = atof(yytext); return INTCON;}
+{comentario}	{printf("comentario");}
+"]"            {return RBK;}
+"["            {return LBK;}
 %%
 /* recomendavel declarar sempre
    funcao yywrap() */
 int yywrap ();
-
-/* programa principal */
-int main() {
-  yylex(); /* scanner gerado por Flex */
-}
 
 int yywrap() {
  return 1;

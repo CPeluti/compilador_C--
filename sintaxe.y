@@ -1,21 +1,36 @@
 %{
-#include <stdio.h> 
+#include <bits/stdc++.h>
+#include <string.h>
+int yylex(void);
+int yywrap();
+int yyerror(char* s);
+extern FILE *yyin;
+extern FILE *yyout;
+//tabela de simbolos
+std::map<std::string,int> tabela;
+// int yylex();
 %}
 
-/* tokens */
-%token NUM
-%token ID
+%start prog
 
-%token IF ELSE WHILE FOR RETURN VOID EXTERN
-%token INTCON CHARCON STRINGCON
+%union { char id[16]; int intcon;}
+/* tokens */
+%token <id> ID
+
+%token IF ELSE WHILE FOR RETURN VOID EXTERN CHAR INT LBK RBK
+%token <intcon> INTCON
+%token CHARCON STRINGCON COMENTARIO
+
+%type prog parm_types rep_dcl rep_parm_types
+%type <id> type var_decl
 
 /* procedencias */
-%left "&&" "||"
+/* %left "&&" "||"
 %right '!'
 %left '<' '<=' ">" ">=" 
 %left "==" "!="
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' */
 
 %%
 
@@ -43,39 +58,51 @@ exp:		NUM				{;}
 
 */
 
-prog	:	dcl ';'  |  func        {;}
-dcl	:	type var_decl { ',' var_decl }
- 	|	type ID '(' parm_types ')' rep_dcl
-        |       EXTERN type ID '(' parm_types ')' rep_dcl
- 	|	VOID ID '(' parm_types ')' rep_dcl
- 	|	EXTERN VOID ID '(' parm_types ')' rep_dcl
-rep_dcl :       
-        |       ',' ID '(' parm_types ')'
-        |       rep_dcl
-var_decl:	ID '[' INTCON ']'
-        |       ID
+prog	:	dcl ';'        												{printf("teste");}
+;
+dcl	:	type var_decl															{;}
+	|	type ID '(' parm_types ')' rep_dcl 											{;}
+	|   EXTERN type ID '(' parm_types ')' rep_dcl 									{;}
+ 	|	VOID ID '(' parm_types ')' rep_dcl 											{;}
+ 	|	EXTERN VOID ID '(' parm_types ')' rep_dcl 									{;} 
+;
+ rep_dcl :        																	{;}
+        |       ',' ID '(' parm_types ')' 											{;}
+        |       rep_dcl 															{;}
+;
+var_decl:	ID LBK INTCON RBK 														{tabela[$1] = $3;}
+        |   ID 																		{tabela[$1] = 1;}
+;
+type	:	CHAR 																									
+	|	INT 																		
+;
 
-type	:	CHARCON
- 	|	INTCON
-parm_types	:	VOID
- 	|	type ID '[' ']' rep_parm_types
-        |       type ID rep_parm_types
-rep_parm_types  :
-        | ',' type ID
-        | ',' type ID '[' ']'
-        | rep_parm_types
-func	:	type ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}'
- 	|	VOID ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}'
-rep_func_var_decl:
-        |       type var_decl rep_var_decl ';'
-        |       rep_func_var_decl
-rep_var_decl:
-        | ',' var_decl 
-        | rep_var_decl
-stmt_rep:
-        | stmt
-        | stmt_rep
+parm_types	:	VOID 																{;}
+ 	|	type ID '[' ']' rep_parm_types 												{;}
+	|   type ID rep_parm_types 														{;}
+;
 
+rep_parm_types  : 																	{;}
+        | ',' type ID 																{;}
+        | ',' type ID '[' ']' 														{;}
+        | rep_parm_types 															{;}
+;
+/*
+func	:	type ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}' 			{;}
+ 	|	VOID ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}' 				{;}
+;
+rep_func_var_decl: 																	{;}
+        |       type var_decl rep_var_decl ';' 										{;}
+        |       rep_func_var_decl 													{;}
+;
+rep_var_decl: 																		{;}
+        | ',' var_decl  															{;}
+        | rep_var_decl 																{;}
+;
+stmt_rep: 																			{;}
+        | stmt 																		{;}
+        | stmt_rep 																	{;}
+;
 stmt:   IF '(' expr ')' stmt ELSE stmt                          {;}
         | IF '(' expr ')' stmt                                  {;}
         | WHILE '(' expr ')' stmt                               {;}
@@ -124,27 +151,42 @@ binop:   '+'    {;}
         | '/'   {;}
 ;
 
-relop:  '=='    {;}
-        |'!='   {;}
-        |'<='   {;}
+relop:  '=''='    {;}
+        |'!''='   {;}
+        |'<''='   {;}
         |'<'    {;}
-        |'>='   {;}
+        |'>''='   {;}
         |'>'    {;}
 ;
 
-logical_op: '&&'    {;}
-            | '||'  {;}
-;
+logical_op: '&''&'    {;}
+            | '|''|'  {;}
+; */
 
 %%
-main () 
+int main (int argc, char **argv)
 {
-	yyparse ();
+	++argv; --argc;
+	if(argc){
+		yyin = fopen(argv[0], "rt");
+		argc--;
+	}
+	else
+		yyin = stdin;
+	if(argc)
+		yyout = fopen(argv[0], "wt");
+	else
+		yyout = stdout;
+
+	yyparse();
+	fclose(yyin);
+	fclose(yyout);
+	return 0;
 }
-yyerror (s) /* Called by yyparse on error */
-	char *s;
+int yyerror (char *s) /* Called by yyparse on error */
 {
-	printf ("Problema com a analise sintatica!\n", s);
+	fprintf(stderr, "error: %s\n", s);
+	return 0;
 }
 
 
