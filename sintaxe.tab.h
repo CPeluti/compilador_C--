@@ -44,6 +44,15 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 19 "sintaxe.y"
+
+    struct pss {
+        char type[30];
+        char id[30];
+    };
+
+#line 56 "sintaxe.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -66,10 +75,13 @@ extern int yydebug;
     INT = 267,                     /* INT  */
     LBK = 268,                     /* LBK  */
     RBK = 269,                     /* RBK  */
-    INTCON = 270,                  /* INTCON  */
-    CHARCON = 271,                 /* CHARCON  */
-    STRINGCON = 272,               /* STRINGCON  */
-    COMENTARIO = 273               /* COMENTARIO  */
+    LP = 270,                      /* LP  */
+    RP = 271,                      /* RP  */
+    SC = 272,                      /* SC  */
+    INTCON = 273,                  /* INTCON  */
+    CHARCON = 274,                 /* CHARCON  */
+    STRINGCON = 275,               /* STRINGCON  */
+    COMENTARIO = 276               /* COMENTARIO  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -78,10 +90,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "sintaxe.y"
- char id[16]; int intcon;
+#line 26 "sintaxe.y"
+ char id[16]; int intcon; struct pss aux; 
 
-#line 85 "sintaxe.tab.h"
+#line 97 "sintaxe.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -7,22 +7,33 @@ int yyerror(char* s);
 extern FILE *yyin;
 extern FILE *yyout;
 //tabela de simbolos
-std::map<std::string,int> tabela;
+std::map<std::string,std::pair<int, std::string>> tabela;
+std::map<std::string,std::pair<std::string, std::tuple<std::string, std::string, int>>> tabela_func;
+// std::pair<std::string, std::string> aux;
+
 // int yylex();
 %}
 
 %start prog
 
-%union { char id[16]; int intcon;}
+%code requires {
+    struct pss {
+        char type[30];
+        char id[30];
+    };
+}
+
+%union { char id[16]; int intcon; struct pss aux; }
 /* tokens */
 %token <id> ID
 
-%token IF ELSE WHILE FOR RETURN VOID EXTERN CHAR INT LBK RBK
+%token IF ELSE WHILE FOR RETURN VOID EXTERN CHAR INT LBK RBK LP RP SC
 %token <intcon> INTCON
 %token CHARCON STRINGCON COMENTARIO
 
-%type prog parm_types rep_dcl rep_parm_types
+%type prog rep_dcl rep_parm_types
 %type <id> type var_decl
+%type <aux> parm_types
 
 /* procedencias */
 /* %left "&&" "||"
@@ -58,33 +69,33 @@ exp:		NUM				{;}
 
 */
 
-prog	:	dcl ';'        												{printf("teste");}
+prog	:	dcl SC        												            {printf("teste");}
 ;
-dcl	:	type var_decl															{;}
-	|	type ID '(' parm_types ')' rep_dcl 											{;}
-	|   EXTERN type ID '(' parm_types ')' rep_dcl 									{;}
- 	|	VOID ID '(' parm_types ')' rep_dcl 											{;}
- 	|	EXTERN VOID ID '(' parm_types ')' rep_dcl 									{;} 
+dcl	:	type var_decl															    {tabela[$2].second = $1;}
+	|	type ID LP parm_types RP rep_dcl 											{tabela_func[$2].first = $1;}
+	|   EXTERN type ID LP parm_types RP rep_dcl 									{;}
+ 	|	VOID ID LP parm_types RP rep_dcl 											{;}
+ 	|	EXTERN VOID ID LP parm_types RP rep_dcl 									{;} 
 ;
- rep_dcl :        																	{;}
-        |       ',' ID '(' parm_types ')' 											{;}
+rep_dcl :        																	{;}
+        |       SC ID LP parm_types RP 											    {;}
         |       rep_dcl 															{;}
 ;
-var_decl:	ID LBK INTCON RBK 														{tabela[$1] = $3;}
-        |   ID 																		{tabela[$1] = 1;}
+var_decl:	ID LBK INTCON RBK 														{tabela[$1].first = $3;}
+        |   ID 																		{tabela[$1].first = 1;}
 ;
-type	:	CHAR 																									
+type:	CHAR 																									
 	|	INT 																		
 ;
 
 parm_types	:	VOID 																{;}
- 	|	type ID '[' ']' rep_parm_types 												{;}
+ 	|	type ID LBK RBK rep_parm_types 												{pss aux; aux.type = $1; aux.id = $2; $$ = aux;}
 	|   type ID rep_parm_types 														{;}
 ;
 
 rep_parm_types  : 																	{;}
-        | ',' type ID 																{;}
-        | ',' type ID '[' ']' 														{;}
+        | SC type ID 																{;}
+        | SC type ID LBK RBK														{;}
         | rep_parm_types 															{;}
 ;
 /*
@@ -179,6 +190,14 @@ int main (int argc, char **argv)
 		yyout = stdout;
 
 	yyparse();
+    /* for(auto it = tabela.cbegin(); it != tabela.cend(); ++it){
+        std::cout << it->second.first << " " << it->second.second << std::endl;
+    } */
+        /* for(auto it = tabela_func.cbegin(); it != tabela_func.cend(); ++it){
+            std::cout << it->second.first << " ";
+            for(auto x : it->second.second)
+                std::cout << x << std::endl;
+        } */
 	fclose(yyin);
 	fclose(yyout);
 	return 0;
