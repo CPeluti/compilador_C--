@@ -44,15 +44,6 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
-/* "%code requires" blocks.  */
-#line 19 "sintaxe.y"
-
-    struct pss {
-        char type[30];
-        char id[30];
-    };
-
-#line 56 "sintaxe.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -66,22 +57,19 @@ extern int yydebug;
     ID = 258,                      /* ID  */
     IF = 259,                      /* IF  */
     ELSE = 260,                    /* ELSE  */
-    WHILE = 261,                   /* WHILE  */
-    FOR = 262,                     /* FOR  */
-    RETURN = 263,                  /* RETURN  */
-    VOID = 264,                    /* VOID  */
-    EXTERN = 265,                  /* EXTERN  */
-    CHAR = 266,                    /* CHAR  */
-    INT = 267,                     /* INT  */
-    LBK = 268,                     /* LBK  */
-    RBK = 269,                     /* RBK  */
-    LP = 270,                      /* LP  */
-    RP = 271,                      /* RP  */
-    SC = 272,                      /* SC  */
-    INTCON = 273,                  /* INTCON  */
-    CHARCON = 274,                 /* CHARCON  */
-    STRINGCON = 275,               /* STRINGCON  */
-    COMENTARIO = 276               /* COMENTARIO  */
+    CHAR = 261,                    /* CHAR  */
+    WHILE = 262,                   /* WHILE  */
+    FOR = 263,                     /* FOR  */
+    RETURN = 264,                  /* RETURN  */
+    VOID = 265,                    /* VOID  */
+    EXTERN = 266,                  /* EXTERN  */
+    LBK = 267,                     /* LBK  */
+    RBK = 268,                     /* RBK  */
+    LP = 269,                      /* LP  */
+    RP = 270,                      /* RP  */
+    SC = 271,                      /* SC  */
+    INTCON = 272,                  /* INTCON  */
+    INT = 273                      /* INT  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -90,10 +78,18 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 26 "sintaxe.y"
- char id[16]; int intcon; struct pss aux; 
+#line 17 "sintaxe.y"
+ 
+    char charcon;
+    std::string *stringValue; 
+    int intcon; 
+    struct pss {
+        std::string *type;
+        std::string *id;
+        int size;
+    }aux; 
 
-#line 97 "sintaxe.tab.h"
+#line 93 "sintaxe.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

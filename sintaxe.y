@@ -1,39 +1,36 @@
 %{
 #include <bits/stdc++.h>
-#include <string.h>
-int yylex(void);
-int yywrap();
-int yyerror(char* s);
 extern FILE *yyin;
 extern FILE *yyout;
 //tabela de simbolos
-std::map<std::string,std::pair<int, std::string>> tabela;
-std::map<std::string,std::pair<std::string, std::tuple<std::string, std::string, int>>> tabela_func;
+// std::map<std::string,std::pair<int, std::string>> tabela;
+// std::map<std::string,std::pair<std::string, std::tuple<std::string, std::string, int>>> tabela_func;
 // std::pair<std::string, std::string> aux;
 
-// int yylex();
+int yylex(void);
+void yyerror(const char *);
 %}
+
 
 %start prog
 
-%code requires {
+%union { 
+    char charcon;
+    std::string *stringValue; 
+    int intcon; 
     struct pss {
-        char type[30];
-        char id[30];
-    };
-}
-
-%union { char id[16]; int intcon; struct pss aux; }
+        std::string *id;
+        int size;
+    }aux; }
 /* tokens */
-%token <id> ID
+%token <stringValue> ID
 
-%token IF ELSE WHILE FOR RETURN VOID EXTERN CHAR INT LBK RBK LP RP SC
+%token IF ELSE CHAR WHILE FOR RETURN VOID EXTERN LBK RBK LP RP SC
 %token <intcon> INTCON
-%token CHARCON STRINGCON COMENTARIO
-
-%type prog rep_dcl rep_parm_types
-%type <id> type var_decl
-%type <aux> parm_types
+%token <stringValue> INT
+%type prog
+%type <stringValue> type 
+%type <aux> var_decl
 
 /* procedencias */
 /* %left "&&" "||"
@@ -71,33 +68,33 @@ exp:		NUM				{;}
 
 prog	:	dcl SC        												            {printf("teste");}
 ;
-dcl	:	type var_decl															    {tabela[$2].second = $1;}
-	|	type ID LP parm_types RP rep_dcl 											{tabela_func[$2].first = $1;}
-	|   EXTERN type ID LP parm_types RP rep_dcl 									{;}
- 	|	VOID ID LP parm_types RP rep_dcl 											{;}
- 	|	EXTERN VOID ID LP parm_types RP rep_dcl 									{;} 
+dcl	:	type var_decl															    {std::cout << *$1 << " " << *$2 << std::endl;}
+	/* |	type ID LP parm_types RP rep_dcl 											{tabela_func[$2].first = $1;} */
+	/* |   EXTERN type ID LP parm_types RP rep_dcl 									{;} */
+ 	/* |	VOID ID LP parm_types RP rep_dcl 											{;} */
+ 	/* |	EXTERN VOID ID LP parm_types RP rep_dcl 									{;}  */
 ;
-rep_dcl :        																	{;}
-        |       SC ID LP parm_types RP 											    {;}
-        |       rep_dcl 															{;}
+/* rep_dcl :        																	{;} */
+        /* |       SC ID LP parm_types RP 											    {;} */
+        /* |       rep_dcl 															{;} */
 ;
-var_decl:	ID LBK INTCON RBK 														{tabela[$1].first = $3;}
-        |   ID 																		{tabela[$1].first = 1;}
+var_decl:	ID LBK INTCON RBK 														{;}
+        |   ID 																		{$<aux.>$ = ;}
 ;
 type:	CHAR 																									
-	|	INT 																		
+	|	INT 																		{;}
 ;
 
-parm_types	:	VOID 																{;}
- 	|	type ID LBK RBK rep_parm_types 												{pss aux; aux.type = $1; aux.id = $2; $$ = aux;}
-	|   type ID rep_parm_types 														{;}
-;
+/* parm_types	:	VOID 																{;} */
+ 	/* |	type ID LBK RBK rep_parm_types 												{pss aux; aux.type = $1; aux.id = $2; $$ = aux;} */
+	/* |   type ID rep_parm_types 														{;} */
+/* ; */
 
-rep_parm_types  : 																	{;}
-        | SC type ID 																{;}
-        | SC type ID LBK RBK														{;}
-        | rep_parm_types 															{;}
-;
+/* rep_parm_types  : 																	{;} */
+        /* | SC type ID 																{;} */
+        /* | SC type ID LBK RBK														{;} */
+        /* | rep_parm_types 															{;} */
+/* ; */
 /*
 func	:	type ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}' 			{;}
  	|	VOID ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}' 				{;}
@@ -175,6 +172,19 @@ logical_op: '&''&'    {;}
 ; */
 
 %%
+/* namespace yy
+{
+  // Report an error to the user.
+  auto parser::error (const std::string& msg) -> void
+  {
+    std::cerr << msg << '\n';
+  }
+} */
+void yyerror (const char *error)
+{
+  std::cout << error << std::endl;
+}
+
 int main (int argc, char **argv)
 {
 	++argv; --argc;
@@ -202,10 +212,4 @@ int main (int argc, char **argv)
 	fclose(yyout);
 	return 0;
 }
-int yyerror (char *s) /* Called by yyparse on error */
-{
-	fprintf(stderr, "error: %s\n", s);
-	return 0;
-}
-
 

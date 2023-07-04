@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <bits/stdc++.h>
 #include "sintaxe.tab.h"
 %}
 letra	[a-zA-Z]
@@ -11,19 +12,15 @@ stringcon \"(\\.|[^"\\])*\"
 comentario (\/\*).*(\*\/)
 
 %%
-"CHAR"	{strcpy(yylval.id, yytext); return CHAR;}
-"INT"	{strcpy(yylval.id, yytext); return INT;}
-{id}		{strcpy(yylval.id, yytext); return ID;}
-{stringcon}	{return STRINGCON;}
-{intcon} {yylval.intcon = atof(yytext); return INTCON;}
-{comentario}	{printf("comentario");}
+"CHAR"	      {yylval.stringValue = new std::string(yytext); return CHAR;}
+"INT"	         {yylval.stringValue = new std::string(yytext); return INT;}
+{id}		      {yylval.stringValue = new std::string(yytext); return ID;}
+{intcon}       {yylval.intcon = std::stoi(yytext); return INTCON;}
 "]"            {return RBK;}
 "["            {return LBK;}
 %%
 /* recomendavel declarar sempre
    funcao yywrap() */
-int yywrap ();
-
 int yywrap() {
- return 1;
+   return 1;
 }

@@ -70,20 +70,17 @@
 #line 1 "sintaxe.y"
 
 #include <bits/stdc++.h>
-#include <string.h>
-int yylex(void);
-int yywrap();
-int yyerror(char* s);
 extern FILE *yyin;
 extern FILE *yyout;
 //tabela de simbolos
-std::map<std::string,std::pair<int, std::string>> tabela;
-std::map<std::string,std::pair<std::string, std::tuple<std::string, std::string, int>>> tabela_func;
+// std::map<std::string,std::pair<int, std::string>> tabela;
+// std::map<std::string,std::pair<std::string, std::tuple<std::string, std::string, int>>> tabela_func;
 // std::pair<std::string, std::string> aux;
 
-// int yylex();
+int yylex(void);
+void yyerror(const char *);
 
-#line 87 "sintaxe.tab.c"
+#line 84 "sintaxe.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -117,30 +114,24 @@ enum yysymbol_kind_t
   YYSYMBOL_ID = 3,                         /* ID  */
   YYSYMBOL_IF = 4,                         /* IF  */
   YYSYMBOL_ELSE = 5,                       /* ELSE  */
-  YYSYMBOL_WHILE = 6,                      /* WHILE  */
-  YYSYMBOL_FOR = 7,                        /* FOR  */
-  YYSYMBOL_RETURN = 8,                     /* RETURN  */
-  YYSYMBOL_VOID = 9,                       /* VOID  */
-  YYSYMBOL_EXTERN = 10,                    /* EXTERN  */
-  YYSYMBOL_CHAR = 11,                      /* CHAR  */
-  YYSYMBOL_INT = 12,                       /* INT  */
-  YYSYMBOL_LBK = 13,                       /* LBK  */
-  YYSYMBOL_RBK = 14,                       /* RBK  */
-  YYSYMBOL_LP = 15,                        /* LP  */
-  YYSYMBOL_RP = 16,                        /* RP  */
-  YYSYMBOL_SC = 17,                        /* SC  */
-  YYSYMBOL_INTCON = 18,                    /* INTCON  */
-  YYSYMBOL_CHARCON = 19,                   /* CHARCON  */
-  YYSYMBOL_STRINGCON = 20,                 /* STRINGCON  */
-  YYSYMBOL_COMENTARIO = 21,                /* COMENTARIO  */
-  YYSYMBOL_YYACCEPT = 22,                  /* $accept  */
-  YYSYMBOL_prog = 23,                      /* prog  */
-  YYSYMBOL_dcl = 24,                       /* dcl  */
-  YYSYMBOL_rep_dcl = 25,                   /* rep_dcl  */
-  YYSYMBOL_var_decl = 26,                  /* var_decl  */
-  YYSYMBOL_type = 27,                      /* type  */
-  YYSYMBOL_parm_types = 28,                /* parm_types  */
-  YYSYMBOL_rep_parm_types = 29             /* rep_parm_types  */
+  YYSYMBOL_CHAR = 6,                       /* CHAR  */
+  YYSYMBOL_WHILE = 7,                      /* WHILE  */
+  YYSYMBOL_FOR = 8,                        /* FOR  */
+  YYSYMBOL_RETURN = 9,                     /* RETURN  */
+  YYSYMBOL_VOID = 10,                      /* VOID  */
+  YYSYMBOL_EXTERN = 11,                    /* EXTERN  */
+  YYSYMBOL_LBK = 12,                       /* LBK  */
+  YYSYMBOL_RBK = 13,                       /* RBK  */
+  YYSYMBOL_LP = 14,                        /* LP  */
+  YYSYMBOL_RP = 15,                        /* RP  */
+  YYSYMBOL_SC = 16,                        /* SC  */
+  YYSYMBOL_INTCON = 17,                    /* INTCON  */
+  YYSYMBOL_INT = 18,                       /* INT  */
+  YYSYMBOL_YYACCEPT = 19,                  /* $accept  */
+  YYSYMBOL_prog = 20,                      /* prog  */
+  YYSYMBOL_dcl = 21,                       /* dcl  */
+  YYSYMBOL_var_decl = 22,                  /* var_decl  */
+  YYSYMBOL_type = 23                       /* type  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -466,21 +457,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  11
+#define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   53
+#define YYLAST   12
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  22
+#define YYNTOKENS  19
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  8
+#define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  21
+#define YYNRULES  7
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  53
+#define YYNSTATES  13
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   276
+#define YYMAXUTOK   273
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -521,16 +512,14 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21
+      15,    16,    17,    18
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    72,    72,    74,    75,    76,    77,    78,    80,    81,
-      82,    84,    85,    87,    88,    91,    92,    93,    96,    97,
-      98,    99
+       0,    70,    70,    72,    82,    83,    85,    86
 };
 #endif
 
@@ -547,10 +536,9 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "ID", "IF", "ELSE",
-  "WHILE", "FOR", "RETURN", "VOID", "EXTERN", "CHAR", "INT", "LBK", "RBK",
-  "LP", "RP", "SC", "INTCON", "CHARCON", "STRINGCON", "COMENTARIO",
-  "$accept", "prog", "dcl", "rep_dcl", "var_decl", "type", "parm_types",
-  "rep_parm_types", YY_NULLPTR
+  "CHAR", "WHILE", "FOR", "RETURN", "VOID", "EXTERN", "LBK", "RBK", "LP",
+  "RP", "SC", "INTCON", "INT", "$accept", "prog", "dcl", "var_decl",
+  "type", YY_NULLPTR
 };
 
 static const char *
@@ -560,7 +548,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-30)
+#define YYPACT_NINF (-15)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -574,12 +562,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       2,     4,     6,   -30,   -30,    20,    -1,    22,     8,    26,
-      28,   -30,   -30,    11,   -30,    10,    17,    18,    19,    10,
-     -30,    32,    23,    10,    10,    24,    25,    -9,    27,    29,
-      30,   -30,    27,    33,    16,   -30,    37,   -30,    27,    27,
-     -30,    31,    39,    21,   -30,   -30,   -30,    36,    10,    38,
-      34,   -30,   -30
+      -6,   -15,   -15,     1,   -14,     0,   -15,   -15,    -8,   -15,
+     -12,    -7,   -15
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -587,24 +571,20 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,    13,    14,     0,     0,     0,     0,     0,
-       0,     1,     2,    12,     3,     0,     0,     0,     0,     0,
-      15,     0,     0,     0,     0,     0,     0,    18,     0,     0,
-       0,    11,     0,     0,     0,    17,     0,     6,     0,     0,
-       4,    18,     0,     0,     7,     5,    16,    19,     0,     0,
-       0,    20,     9
+       0,     6,     7,     0,     0,     0,     1,     2,     5,     3,
+       0,     0,     4
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -30,   -30,   -30,   -29,   -30,     0,   -18,    12
+     -15,   -15,   -15,   -15,   -15
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     5,     6,    37,    14,    21,    22,    35
+       0,     3,     4,     9,     5
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -612,50 +592,34 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       7,    26,    10,    40,    33,    29,    30,     8,    34,    44,
-      45,     1,     2,     3,     4,     9,    12,     3,     4,    20,
-      11,     3,     4,    15,    18,    13,    19,     3,     4,    16,
-      50,    17,    23,    24,    42,    27,    48,    25,    31,    28,
-      43,    32,    47,     0,    36,    38,    39,    41,    34,    49,
-      52,     0,    51,    46
+       1,     6,     7,     8,    10,    11,    12,     0,     0,     0,
+       0,     0,     2
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,    19,     2,    32,    13,    23,    24,     3,    17,    38,
-      39,     9,    10,    11,    12,     9,    17,    11,    12,     9,
-       0,    11,    12,    15,    13,     3,    15,    11,    12,     3,
-      48,     3,    15,    15,    34,     3,    15,    18,    14,    16,
-       3,    16,     3,    -1,    17,    16,    16,    14,    17,    13,
-      16,    -1,    14,    41
+       6,     0,    16,     3,    12,    17,    13,    -1,    -1,    -1,
+      -1,    -1,    18
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     9,    10,    11,    12,    23,    24,    27,     3,     9,
-      27,     0,    17,     3,    26,    15,     3,     3,    13,    15,
-       9,    27,    28,    15,    15,    18,    28,     3,    16,    28,
-      28,    14,    16,    13,    17,    29,    17,    25,    16,    16,
-      25,    14,    27,     3,    25,    25,    29,     3,    15,    13,
-      28,    14,    16
+       0,     6,    18,    20,    21,    23,     0,    16,     3,    22,
+      12,    17,    13
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    22,    23,    24,    24,    24,    24,    24,    25,    25,
-      25,    26,    26,    27,    27,    28,    28,    28,    29,    29,
-      29,    29
+       0,    19,    20,    21,    22,    22,    23,    23
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     2,     6,     7,     6,     7,     0,     5,
-       1,     4,     1,     1,     1,     1,     5,     3,     0,     3,
-       5,     1
+       0,     2,     2,     2,     4,     1,     1,     1
 };
 
 
@@ -1119,115 +1083,37 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* prog: dcl SC  */
-#line 72 "sintaxe.y"
+#line 70 "sintaxe.y"
                                                                                                                                     {printf("teste");}
-#line 1125 "sintaxe.tab.c"
+#line 1089 "sintaxe.tab.c"
     break;
 
   case 3: /* dcl: type var_decl  */
-#line 74 "sintaxe.y"
-                                                                                                                                                    {tabela[(yyvsp[0].id)].second = (yyvsp[-1].id);}
-#line 1131 "sintaxe.tab.c"
+#line 72 "sintaxe.y"
+                                                                                                                                                    {std::cout << *(yyvsp[-1].stringValue) << " " << *(yyvsp[0].aux) << std::endl;}
+#line 1095 "sintaxe.tab.c"
     break;
 
-  case 4: /* dcl: type ID LP parm_types RP rep_dcl  */
-#line 75 "sintaxe.y"
-                                                                                                                                        {tabela[(yyvsp[-4].id)].first = (yyvsp[-5].id);}
-#line 1137 "sintaxe.tab.c"
-    break;
-
-  case 5: /* dcl: EXTERN type ID LP parm_types RP rep_dcl  */
-#line 76 "sintaxe.y"
-                                                                                                                        {;}
-#line 1143 "sintaxe.tab.c"
-    break;
-
-  case 6: /* dcl: VOID ID LP parm_types RP rep_dcl  */
-#line 77 "sintaxe.y"
-                                                                                                                                        {;}
-#line 1149 "sintaxe.tab.c"
-    break;
-
-  case 7: /* dcl: EXTERN VOID ID LP parm_types RP rep_dcl  */
-#line 78 "sintaxe.y"
-                                                                                                                                {;}
-#line 1155 "sintaxe.tab.c"
-    break;
-
-  case 8: /* rep_dcl: %empty  */
-#line 80 "sintaxe.y"
-                                                                                                                                                        {;}
-#line 1161 "sintaxe.tab.c"
-    break;
-
-  case 9: /* rep_dcl: SC ID LP parm_types RP  */
-#line 81 "sintaxe.y"
-                                                                                                                            {;}
-#line 1167 "sintaxe.tab.c"
-    break;
-
-  case 10: /* rep_dcl: rep_dcl  */
+  case 4: /* var_decl: ID LBK INTCON RBK  */
 #line 82 "sintaxe.y"
                                                                                                                                                 {;}
-#line 1173 "sintaxe.tab.c"
+#line 1101 "sintaxe.tab.c"
     break;
 
-  case 11: /* var_decl: ID LBK INTCON RBK  */
-#line 84 "sintaxe.y"
-                                                                                                                                                {tabela[(yyvsp[-3].id)].first = (yyvsp[-1].intcon);}
-#line 1179 "sintaxe.tab.c"
-    break;
-
-  case 12: /* var_decl: ID  */
-#line 85 "sintaxe.y"
-                                                                                                                                                        {tabela[(yyvsp[0].id)].first = 1;}
-#line 1185 "sintaxe.tab.c"
-    break;
-
-  case 15: /* parm_types: VOID  */
-#line 91 "sintaxe.y"
+  case 5: /* var_decl: ID  */
+#line 83 "sintaxe.y"
                                                                                                                                                         {;}
-#line 1191 "sintaxe.tab.c"
+#line 1107 "sintaxe.tab.c"
     break;
 
-  case 16: /* parm_types: type ID LBK RBK rep_parm_types  */
-#line 92 "sintaxe.y"
-                                                                                                                                        {pss aux; aux.type = (yyvsp[-4].id); aux.id = (yyvsp[-3].id); (yyval.aux) = aux;}
-#line 1197 "sintaxe.tab.c"
-    break;
-
-  case 17: /* parm_types: type ID rep_parm_types  */
-#line 93 "sintaxe.y"
-                                                                                                                                                {;}
-#line 1203 "sintaxe.tab.c"
-    break;
-
-  case 18: /* rep_parm_types: %empty  */
-#line 96 "sintaxe.y"
-                                                                                                                                                        {;}
-#line 1209 "sintaxe.tab.c"
-    break;
-
-  case 19: /* rep_parm_types: SC type ID  */
-#line 97 "sintaxe.y"
-                                                                                                                                                {;}
-#line 1215 "sintaxe.tab.c"
-    break;
-
-  case 20: /* rep_parm_types: SC type ID LBK RBK  */
-#line 98 "sintaxe.y"
-                                                                                                                                        {;}
-#line 1221 "sintaxe.tab.c"
-    break;
-
-  case 21: /* rep_parm_types: rep_parm_types  */
-#line 99 "sintaxe.y"
-                                                                                                                                                {;}
-#line 1227 "sintaxe.tab.c"
+  case 7: /* type: INT  */
+#line 86 "sintaxe.y"
+                                                                                                                                                                {;}
+#line 1113 "sintaxe.tab.c"
     break;
 
 
-#line 1231 "sintaxe.tab.c"
+#line 1117 "sintaxe.tab.c"
 
       default: break;
     }
@@ -1420,7 +1306,20 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 177 "sintaxe.y"
+#line 175 "sintaxe.y"
+
+/* namespace yy
+{
+  // Report an error to the user.
+  auto parser::error (const std::string& msg) -> void
+  {
+    std::cerr << msg << '\n';
+  }
+} */
+void yyerror (const char *error)
+{
+  std::cout << error << std::endl;
+}
 
 int main (int argc, char **argv)
 {
@@ -1449,10 +1348,4 @@ int main (int argc, char **argv)
 	fclose(yyout);
 	return 0;
 }
-int yyerror (char *s) /* Called by yyparse on error */
-{
-	fprintf(stderr, "error: %s\n", s);
-	return 0;
-}
-
 
