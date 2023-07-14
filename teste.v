@@ -8,6 +8,11 @@ var_b:
 .text
 main:
 
+# add
+lw t0, 0(sp)
+lw t1, 4(sp)
+add 
+
 #store_imm
 
 li t0,imm
