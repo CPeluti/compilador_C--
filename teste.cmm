@@ -1,5 +1,33 @@
-LET
-    INTEGER teste;
-IN
+let
+    integer teste,a,b.
+in
+    a := 2;
+    b := 3;
+    teste := a+b;
+    if a*b<teste then
+        write 0
+    else 
+        write 1
+    fi
+end
 
-END
+if_1: 
+
+addi a,zero,2
+addi b,zero,3
+
+
+lw s1, a
+lw s2, b
+add s0,s1,s2
+sw teste, s0
+
+aux_1: a*b
+aux_2: teste
+bge aux_1,aux2,if_1_else
+    write 0
+    jump fi_1
+if_1_else:
+    write 1
+    jump fi_1
+fi_1:

@@ -69,18 +69,25 @@
 /* First part of user prologue.  */
 #line 1 "sintaxe.y"
 
-#include <bits/stdc++.h>
-extern FILE *yyin;
-extern FILE *yyout;
-//tabela de simbolos
-// std::map<std::string,std::pair<int, std::string>> tabela;
-// std::map<std::string,std::pair<std::string, std::tuple<std::string, std::string, int>>> tabela_func;
-// std::pair<std::string, std::string> aux;
+    #include <bits/stdc++.h>
+    #include "st.h"
+    extern FILE *yyin;
+    extern FILE *yyout;
+    ST symbol_table;
+    int yylex(void);
+    void yyerror(const char *);
+    void install (std::string* sym_name)
+    {
+        bool s = symbol_table.exist_symbol(*sym_name);
+        if(!s){
+            std::cout << "Não existe" << std::endl;
+            symbol_table.insert_symbol(*sym_name);
 
-int yylex(void);
-void yyerror(const char *);
+        }else 
+            std::cout << *sym_name << " " << "is already defined" << std::endl;
+    }
 
-#line 84 "sintaxe.tab.c"
+#line 91 "sintaxe.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -536,9 +543,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    45,    45,    47,    45,    51,    52,    54,    55,    57,
-      58,    60,    61,    62,    63,    64,    65,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77
+       0,    52,    52,    54,    52,    58,    59,    61,    62,    64,
+      65,    67,    68,    69,    70,    71,    72,    74,    75,    76,
+      77,    78,    79,    80,    81,    82,    83,    84
 };
 #endif
 
@@ -1144,43 +1151,43 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* $@1: %empty  */
-#line 45 "sintaxe.y"
-              {std::cout << "teste aqui" << std::endl;}
-#line 1150 "sintaxe.tab.c"
+#line 52 "sintaxe.y"
+              {;}
+#line 1157 "sintaxe.tab.c"
     break;
 
   case 3: /* $@2: %empty  */
-#line 47 "sintaxe.y"
+#line 54 "sintaxe.y"
            {;}
-#line 1156 "sintaxe.tab.c"
+#line 1163 "sintaxe.tab.c"
     break;
 
   case 4: /* program: LET $@1 declarations IN $@2 commands END  */
-#line 49 "sintaxe.y"
+#line 56 "sintaxe.y"
             {;}
-#line 1162 "sintaxe.tab.c"
+#line 1169 "sintaxe.tab.c"
     break;
 
   case 6: /* declarations: INTEGER id_seq IDENTIFIER '.'  */
-#line 52 "sintaxe.y"
-                                {;}
-#line 1168 "sintaxe.tab.c"
+#line 59 "sintaxe.y"
+                                {install((yyvsp[-1].id));}
+#line 1175 "sintaxe.tab.c"
     break;
 
   case 8: /* id_seq: id_seq IDENTIFIER ','  */
-#line 55 "sintaxe.y"
-                        {std::cout << "aqui" << std::endl;}
-#line 1174 "sintaxe.tab.c"
+#line 62 "sintaxe.y"
+                        {install((yyvsp[-1].id));}
+#line 1181 "sintaxe.tab.c"
     break;
 
   case 10: /* commands: commands command ';'  */
-#line 58 "sintaxe.y"
+#line 65 "sintaxe.y"
                        {;}
-#line 1180 "sintaxe.tab.c"
+#line 1187 "sintaxe.tab.c"
     break;
 
 
-#line 1184 "sintaxe.tab.c"
+#line 1191 "sintaxe.tab.c"
 
       default: break;
     }
@@ -1373,7 +1380,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 80 "sintaxe.y"
+#line 87 "sintaxe.y"
 
 /* namespace yy
 {

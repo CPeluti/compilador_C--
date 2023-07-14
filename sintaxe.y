@@ -1,14 +1,21 @@
 %{
-#include <bits/stdc++.h>
-extern FILE *yyin;
-extern FILE *yyout;
-//tabela de simbolos
-// std::map<std::string,std::pair<int, std::string>> tabela;
-// std::map<std::string,std::pair<std::string, std::tuple<std::string, std::string, int>>> tabela_func;
-// std::pair<std::string, std::string> aux;
+    #include <bits/stdc++.h>
+    #include "st.h"
+    extern FILE *yyin;
+    extern FILE *yyout;
+    ST symbol_table;
+    int yylex(void);
+    void yyerror(const char *);
+    void install (std::string* sym_name)
+    {
+        bool s = symbol_table.exist_symbol(*sym_name);
+        if(!s){
+            std::cout << "Não existe" << std::endl;
+            symbol_table.insert_symbol(*sym_name);
 
-int yylex(void);
-void yyerror(const char *);
+        }else 
+            std::cout << *sym_name << " " << "is already defined" << std::endl;
+    }
 %}
 
 
@@ -42,30 +49,30 @@ struct lbs *lbls;
 
 %%
 
-program : LET {std::cout << "teste aqui" << std::endl;}
+program : LET {;}
             declarations 
         IN {;}
             commands 
         END {;}
 ;
 declarations : /* empty */
-| INTEGER id_seq IDENTIFIER '.' {;}
+| INTEGER id_seq IDENTIFIER '.' {install($3);}
 ;
 id_seq : /* empty */
-| id_seq IDENTIFIER ',' {std::cout << "aqui" << std::endl;}
+| id_seq IDENTIFIER ',' {install($2);}
 ;
 commands : /* empty */
-| commands command ';' {;}
+| commands command ';'
 ;
 command : SKIP
 | READ IDENTIFIER
 | WRITE exp
-| IDENTIFIER ATRIBUICAO exp
+| IDENTIFIER ATRIBUICAO exp 
 | IF exp THEN commands ELSE commands FI
 | WHILE exp DO commands END
 ;
-exp : NUMBER
-| IDENTIFIER
+exp : NUMBER {gen_code('store_imm', $1)}
+| IDENTIFIER {gen_code('store', $1)}
 | exp '<' exp
 | exp '=' exp
 | exp '>' exp
