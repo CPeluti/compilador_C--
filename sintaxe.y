@@ -12,25 +12,25 @@ void yyerror(const char *);
 %}
 
 
-%start prog
+%union {
+int intval;
+std::string *id;
+struct lbs *lbls;
+}
 
-%union { 
-    char charcon;
-    std::string *stringValue; 
-    int intcon; 
-    struct pss {
-        std::string *id;
-        int size;
-    }aux; }
 /* tokens */
-%token <stringValue> ID
+%start program
+%token <intval> NUMBER /* Simple integer */
+%token <id> IDENTIFIER /* Simple identifier */
+%token <lbls> IF WHILE /* For backpatching labels */
+%token SKIP THEN ELSE FI DO END
+%token INTEGER READ WRITE LET IN
+%token ATRIBUICAO
 
-%token IF ELSE CHAR WHILE FOR RETURN VOID EXTERN LBK RBK LP RP SC
-%token <intcon> INTCON
-%token <stringValue> INT
-%type prog
-%type <stringValue> type 
-%type <aux> var_decl
+%left '-' '+'
+%left '*' '/'
+%right '^'
+
 
 /* procedencias */
 /* %left "&&" "||"
@@ -42,134 +42,40 @@ void yyerror(const char *);
 
 %%
 
-/* regras */
-
-/*
-input:    /* empty */
-/*
-        | input line
+program : LET {std::cout << "teste aqui" << std::endl;}
+            declarations 
+        IN {;}
+            commands 
+        END {;}
 ;
-line:     '\n'
-        | programa '\n'  { printf ("Programa sintaticamente correto!\n"); }
+declarations : /* empty */
+| INTEGER id_seq IDENTIFIER '.' {;}
 ;
-programa:	'{' lista_cmds '}'	{;}
+id_seq : /* empty */
+| id_seq IDENTIFIER ',' {std::cout << "aqui" << std::endl;}
 ;
-lista_cmds:	cmd				{;}
-		| cmd ';' lista_cmds	{;}
+commands : /* empty */
+| commands command ';' {;}
 ;
-cmd:		ID '=' exp			{;}
+command : SKIP
+| READ IDENTIFIER
+| WRITE exp
+| IDENTIFIER ATRIBUICAO exp
+| IF exp THEN commands ELSE commands FI
+| WHILE exp DO commands END
 ;
-exp:		NUM				{;}
-		| ID				{;}
-		| exp exp '+'		{;}
+exp : NUMBER
+| IDENTIFIER
+| exp '<' exp
+| exp '=' exp
+| exp '>' exp
+| exp '+' exp
+| exp '-' exp
+| exp '*' exp
+| exp '/' exp
+| exp '^' exp
+| '(' exp ')'
 ;
-
-*/
-
-prog	:	dcl SC        												            {printf("teste");}
-;
-dcl	:	type var_decl															    {std::cout << *$1 << " " << *$2 << std::endl;}
-	/* |	type ID LP parm_types RP rep_dcl 											{tabela_func[$2].first = $1;} */
-	/* |   EXTERN type ID LP parm_types RP rep_dcl 									{;} */
- 	/* |	VOID ID LP parm_types RP rep_dcl 											{;} */
- 	/* |	EXTERN VOID ID LP parm_types RP rep_dcl 									{;}  */
-;
-/* rep_dcl :        																	{;} */
-        /* |       SC ID LP parm_types RP 											    {;} */
-        /* |       rep_dcl 															{;} */
-;
-var_decl:	ID LBK INTCON RBK 														{;}
-        |   ID 																		{$<aux.>$ = ;}
-;
-type:	CHAR 																									
-	|	INT 																		{;}
-;
-
-/* parm_types	:	VOID 																{;} */
- 	/* |	type ID LBK RBK rep_parm_types 												{pss aux; aux.type = $1; aux.id = $2; $$ = aux;} */
-	/* |   type ID rep_parm_types 														{;} */
-/* ; */
-
-/* rep_parm_types  : 																	{;} */
-        /* | SC type ID 																{;} */
-        /* | SC type ID LBK RBK														{;} */
-        /* | rep_parm_types 															{;} */
-/* ; */
-/*
-func	:	type ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}' 			{;}
- 	|	VOID ID '(' parm_types ')' '{' rep_func_var_decl stmt_rep '}' 				{;}
-;
-rep_func_var_decl: 																	{;}
-        |       type var_decl rep_var_decl ';' 										{;}
-        |       rep_func_var_decl 													{;}
-;
-rep_var_decl: 																		{;}
-        | ',' var_decl  															{;}
-        | rep_var_decl 																{;}
-;
-stmt_rep: 																			{;}
-        | stmt 																		{;}
-        | stmt_rep 																	{;}
-;
-stmt:   IF '(' expr ')' stmt ELSE stmt                          {;}
-        | IF '(' expr ')' stmt                                  {;}
-        | WHILE '(' expr ')' stmt                               {;}
-        | FOR '(' assg_op ';' expr_op ';' assg_op ')' stmt      {;}
-        | RETURN expr_op ';'                                    {;}
-        | assg ';'                                              {;}
-        | ID '(' expr expr_rep ')' ';'                          {;}
-        | ID '(' ')' ';'                                        {;}
-        | '{' stmt_rep '}'                                      {;}
-        | ';'                                                   {;}
-;
-
-assg_op: assg
-        | VOID
-;
-
-expr_op: expr
-        | VOID
-;
-
-expr_rep: ',' expr
-        | expr_rep
-;
-
-assg:   ID '[' expr ']' '=' expr    {;}
-        | ID '=' expr               {;}
-;
-
-expr:   '-' expr                    {;}
-        | '!' expr                  {;}
-        | expr binop expr           {;}
-        | expr relop expr           {;}
-        | expr logical_op expr      {;}
-        | ID '(' expr expr_rep ')'  {;}
-        | ID '[' expr ']'           {;}
-        | ID                        {;}
-        | '(' expr ')'              {;}
-        | INTCON                    {;}
-        | CHARCON                   {;}
-        | STRINGCON                 {;}
-;
-
-binop:   '+'    {;}
-        | '-'   {;}
-        | '*'   {;}
-        | '/'   {;}
-;
-
-relop:  '=''='    {;}
-        |'!''='   {;}
-        |'<''='   {;}
-        |'<'    {;}
-        |'>''='   {;}
-        |'>'    {;}
-;
-
-logical_op: '&''&'    {;}
-            | '|''|'  {;}
-; */
 
 %%
 /* namespace yy

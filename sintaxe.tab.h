@@ -54,22 +54,22 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    ID = 258,                      /* ID  */
-    IF = 259,                      /* IF  */
-    ELSE = 260,                    /* ELSE  */
-    CHAR = 261,                    /* CHAR  */
-    WHILE = 262,                   /* WHILE  */
-    FOR = 263,                     /* FOR  */
-    RETURN = 264,                  /* RETURN  */
-    VOID = 265,                    /* VOID  */
-    EXTERN = 266,                  /* EXTERN  */
-    LBK = 267,                     /* LBK  */
-    RBK = 268,                     /* RBK  */
-    LP = 269,                      /* LP  */
-    RP = 270,                      /* RP  */
-    SC = 271,                      /* SC  */
-    INTCON = 272,                  /* INTCON  */
-    INT = 273                      /* INT  */
+    NUMBER = 258,                  /* NUMBER  */
+    IDENTIFIER = 259,              /* IDENTIFIER  */
+    IF = 260,                      /* IF  */
+    WHILE = 261,                   /* WHILE  */
+    SKIP = 262,                    /* SKIP  */
+    THEN = 263,                    /* THEN  */
+    ELSE = 264,                    /* ELSE  */
+    FI = 265,                      /* FI  */
+    DO = 266,                      /* DO  */
+    END = 267,                     /* END  */
+    INTEGER = 268,                 /* INTEGER  */
+    READ = 269,                    /* READ  */
+    WRITE = 270,                   /* WRITE  */
+    LET = 271,                     /* LET  */
+    IN = 272,                      /* IN  */
+    ATRIBUICAO = 273               /* ATRIBUICAO  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -78,18 +78,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 17 "sintaxe.y"
- 
-    char charcon;
-    std::string *stringValue; 
-    int intcon; 
-    struct pss {
-        std::string *type;
-        std::string *id;
-        int size;
-    }aux; 
+#line 15 "sintaxe.y"
 
-#line 93 "sintaxe.tab.h"
+int intval;
+std::string *id;
+struct lbs *lbls;
+
+#line 88 "sintaxe.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,1 +1,5 @@
-INT teste
+LET
+    INTEGER teste;
+IN
+
+END
