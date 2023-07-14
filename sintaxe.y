@@ -67,16 +67,16 @@ commands : /* empty */
 command : SKIP
 | READ IDENTIFIER
 | WRITE exp
-| IDENTIFIER ATRIBUICAO exp 
+| IDENTIFIER ATRIBUICAO exp {gen_code('assign')}
 | IF exp THEN commands ELSE commands FI
 | WHILE exp DO commands END
 ;
 exp : NUMBER {gen_code('store_imm', $1)}
 | IDENTIFIER {gen_code('store', $1)}
-| exp '<' exp
+| exp '<' exp {}
 | exp '=' exp
 | exp '>' exp
-| exp '+' exp
+| exp '+' exp {gen_code('add')}
 | exp '-' exp
 | exp '*' exp
 | exp '/' exp
