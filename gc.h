@@ -2,6 +2,6 @@
 class GC 
 {
     public:
-        void gen_code(std::string operacao, int var=NULL);
+        std::string gen_code(std::string operacao, int var=NULL, std::string id=NULL);
         
 };

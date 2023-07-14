@@ -59,28 +59,28 @@ declarations : /* empty */
 | INTEGER id_seq IDENTIFIER '.' {install($3);}
 ;
 id_seq : /* empty */
-| id_seq IDENTIFIER ',' {install($2);}
+| id_seq IDENTIFIER ','         {install($2);}
 ;
 commands : /* empty */
 | commands command ';'
 ;
 command : SKIP
-| READ IDENTIFIER
-| WRITE exp
-| IDENTIFIER ATRIBUICAO exp {gen_code('assign')}
-| IF exp THEN commands ELSE commands FI
+| READ IDENTIFIER                           {gen_code("read", NULL, $2);}
+| WRITE exp                                 {gen_code("write", $2);}
+| IDENTIFIER ATRIBUICAO exp                 {gen_code("assign", $3, $1);}
+| IF exp THEN commands ELSE commands FI     {gen_code("if", $2);}
 | WHILE exp DO commands END
 ;
-exp : NUMBER {gen_code('store_imm', $1)}
-| IDENTIFIER {gen_code('store', $1)}
-| exp '<' exp {}
-| exp '=' exp
-| exp '>' exp
-| exp '+' exp {gen_code('add')}
-| exp '-' exp
-| exp '*' exp
-| exp '/' exp
-| exp '^' exp
+exp : NUMBER    {gen_code("store_imm", $1);}
+| IDENTIFIER    {gen_code("store", $1);}
+| exp '<' exp   {gen_code("less");}
+| exp '=' exp   {gen_code("equal");}
+| exp '>' exp   {gen_code("greater");}
+| exp '-' exp   {gen_code("sub");}
+| exp '+' exp   {gen_code("add");}
+| exp '*' exp   {gen_code("mul");}
+| exp '/' exp   {gen_code("div");}
+| exp '^' exp   {gen_code("pow");}
 | '(' exp ')'
 ;
 
