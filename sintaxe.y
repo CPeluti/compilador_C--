@@ -11,6 +11,12 @@
     int while_counter = 0;
     int if_counter = 0;
     std::stack<std::string> context;
+
+    void parse_sym_table(ST symbol_table){
+        for(auto x : symbol_table){
+            code_generator.gen_code("symbol", x.first, x.second);
+        }
+    }
     void set_context(char f){
         std::string s = "";
         switch(f){

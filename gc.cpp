@@ -1,6 +1,6 @@
 #include<string>
 #include "gc.h"
-void GC::gen_code(std::string operacao, std::string id){
+void GC::gen_code(std::string operacao, std::string id, int var){
     std::string res="";
     if(operacao == "data"){
         res += ".data\n";
@@ -11,6 +11,9 @@ void GC::gen_code(std::string operacao, std::string id){
     } else if(operacao == "end"){
         res += "li a7, 10\n";
         res += "ecall\n";
+
+    } else if(operacao == "symbol"){
+        res += id + ": .word" + std::to_string(var) + '\n';
 
     } else if(operacao == "jump"){
         res += "j " + id + '\n';
