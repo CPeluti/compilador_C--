@@ -19,6 +19,7 @@ fi              {return (FI);}
 if              {return (IF);}
 in              {return (IN);}
 integer         {return (INTEGER);}
+endl            {return (ENDL);}
 let             {return (LET);}
 read            {return (READ);}
 skip            {return (SKIP);}

@@ -1,9 +1,9 @@
 #include<string>
-#include<map>
+#include<vector>
 class ST 
 {
     public:
-        std::map<std::string, int> symbol_table;
+        std::vector<std::string> symbol_table;
         bool exist_symbol(std::string symbol);
         void insert_symbol(std::string symbol);
 };

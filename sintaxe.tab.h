@@ -67,9 +67,10 @@ extern int yydebug;
     INTEGER = 268,                 /* INTEGER  */
     READ = 269,                    /* READ  */
     WRITE = 270,                   /* WRITE  */
-    LET = 271,                     /* LET  */
-    IN = 272,                      /* IN  */
-    ATRIBUICAO = 273               /* ATRIBUICAO  */
+    ENDL = 271,                    /* ENDL  */
+    LET = 272,                     /* LET  */
+    IN = 273,                      /* IN  */
+    ATRIBUICAO = 274               /* ATRIBUICAO  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -78,13 +79,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 58 "sintaxe.y"
+#line 62 "sintaxe.y"
 
 std::string *intval;
 std::string *id;
 struct lbs *lbls;
 
-#line 88 "sintaxe.tab.h"
+#line 89 "sintaxe.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

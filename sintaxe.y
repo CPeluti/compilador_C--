@@ -1,9 +1,9 @@
 %{
     #include <bits/stdc++.h>
+    #include<fstream>
     #include "st.h"
     #include "gc.h"
     extern FILE *yyin;
-    extern FILE *yyout;
     ST symbol_table;
     GC code_generator;
 
@@ -13,8 +13,8 @@
     std::stack<std::string> context;
 
     void parse_sym_table(ST symbol_table){
-        for(auto x : symbol_table){
-            code_generator.gen_code("symbol", x.first, x.second);
+        for(auto sym : symbol_table.symbol_table){
+            code_generator.gen_code("symbol", sym);
         }
     }
     void set_context(char f){
@@ -46,13 +46,11 @@
         }
     }
     void yyerror(const char *);
-    void parse_sym_table(ST symbol_table){}
     void install (std::string* sym_name)
     {
-        std::string var_name = "var_"+*sym_name;
+        std::string var_name = *sym_name;
         bool s = symbol_table.exist_symbol(var_name);
         if(!s){
-            std::cout << "Não existe" << std::endl;
             symbol_table.insert_symbol(var_name);
 
         }else 
@@ -73,7 +71,7 @@ struct lbs *lbls;
 %token <id> IDENTIFIER /* Simple identifier */
 %token <lbls> IF WHILE /* For backpatching labels */
 %token SKIP THEN ELSE FI DO END
-%token INTEGER READ WRITE LET IN
+%token INTEGER READ WRITE ENDL LET IN
 %token ATRIBUICAO
 
 %left '-' '+'
@@ -89,20 +87,23 @@ program : LET {code_generator.gen_code("data");}
         END {code_generator.gen_code("end");}
 ;
 declarations : /* empty */
-| INTEGER id_seq IDENTIFIER '.' {install($3);}
+| INTEGER id_seq IDENTIFIER     {install($3);}
 ;
 id_seq : /* empty */
 | id_seq IDENTIFIER ','         {install($2);}
 ;
 commands : /* empty */
-| commands command ';'
+| commands command
 ;
 command : SKIP                              {check_context();}
 | READ IDENTIFIER                           {code_generator.gen_code("read", *$2);}
-| WRITE exp                                 {code_generator.gen_code("write");}
+| WRITE exp {code_generator.gen_code("write");} endl                    
 | IDENTIFIER ATRIBUICAO exp                 {code_generator.gen_code("assign", *$1);}
 | IF{set_context('i');} exp THEN{code_generator.gen_code("check", "else_"+context.top());} commands ELSE{code_generator.gen_code("label", "else_"+context.top());} commands FI{end_context('e');}
 | WHILE{set_context('w');} exp DO{code_generator.gen_code("check", "end_"+context.top());} commands END{end_context();}
+;
+endl: 
+| ENDL{code_generator.gen_code("endl");}
 ;
 exp : NUMBER    {code_generator.gen_code("store_imm", *$1);}
 | IDENTIFIER    {code_generator.gen_code("store", *$1);}
@@ -140,15 +141,16 @@ int main (int argc, char **argv)
 	}
 	else
 		yyin = stdin;
-	if(argc)
-		yyout = fopen(argv[0], "wt");
-	else
-		yyout = stdout;
 
 	yyparse();
-    for(int i = 0; i<code_generator.code.size(); i++){
-        std::cout << code_generator.code[i] << std::endl;
+	if(argc){
+        std::ofstream yyout(argv[1]);
+        for(int i = 0; i<code_generator.code.size(); i++){
+            yyout << code_generator.code[i];
+        }
+	    yyout.close();
     }
+
     /* for(auto it = tabela.cbegin(); it != tabela.cend(); ++it){
         std::cout << it->second.first << " " << it->second.second << std::endl;
     } */
@@ -158,7 +160,6 @@ int main (int argc, char **argv)
                 std::cout << x << std::endl;
         } */
 	fclose(yyin);
-	fclose(yyout);
 	return 0;
 }
 

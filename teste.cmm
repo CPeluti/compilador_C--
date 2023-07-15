@@ -1,9 +1,13 @@
 let
-    integer teste,a,b.
+    integer teste,a,b
 in
-    a := 2;
-    b := 3;
-    teste := a+b;
-    while a=b do
-    end;
+    a := 2
+    b := 3
+    teste := a+b
+    while a > 0 do
+        b := b + 1
+        a := a - 1
+        write a endl
+    end
+    write b
 end

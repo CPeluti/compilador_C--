@@ -1,6 +1,6 @@
 #include<string>
 #include "gc.h"
-void GC::gen_code(std::string operacao, std::string id, int var){
+void GC::gen_code(std::string operacao, std::string id){
     std::string res="";
     if(operacao == "data"){
         res += ".data\n";
@@ -13,7 +13,7 @@ void GC::gen_code(std::string operacao, std::string id, int var){
         res += "ecall\n";
 
     } else if(operacao == "symbol"){
-        res += id + ": .word" + std::to_string(var) + '\n';
+        res += id + ": .space 4\n";
 
     } else if(operacao == "jump"){
         res += "j " + id + '\n';
@@ -41,8 +41,13 @@ void GC::gen_code(std::string operacao, std::string id, int var){
     } else if(operacao == "write"){
         res += "lw a0, 0(sp)\n";        // tira o num da pilha e coloca em a0
         res += "li a7, 1\n";            // coloca o valor 1 em a7 (print int)
-        res += "ecall\n";               
+        res += "ecall\n";
         res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
+
+    } else if(operacao == "endl"){
+        res += "li a7, 11\n";           // printar \n 
+        res += "li a0, 10\n";
+        res += "ecall\n"; 
 
     } else if(operacao == "store_imm"){
         res += "li t0, " + id + '\n';  // coloca o valor de var em t0
