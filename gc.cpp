@@ -49,6 +49,34 @@ void GC::gen_code(std::string operacao, std::string id){
         res += "li a0, 10\n";
         res += "ecall\n"; 
 
+    } else if(operacao == "++"){
+        res += "la t1, " + id + '\n';
+        res += "lw t0, 0(t1)\n";        // tira o segundo num da pilha e coloca em t1
+        res += "addi t0, t0, 1\n";
+        res += "sw t0, (t1)\n";
+
+    } else if(operacao == "--"){
+        res += "la t1, " + id + '\n';
+        res += "lw t0, 0(t1)\n";        // tira o segundo num da pilha e coloca em t1
+        res += "addi t0, t0, -1\n";
+        res += "sw t0, (t1)\n";
+
+    } else if(operacao == "+="){
+        res += "la t1, " + id + '\n';
+        res += "lw t0, 0(sp)\n";        // tira o num da pilha e coloca em t1
+        res += "lw t2, (t1)\n";
+        res += "add t0, t0, t2\n";
+        res += "sw t0, (t1)\n";
+        res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
+
+    } else if(operacao == "-="){
+        res += "la t1, " + id + '\n';
+        res += "lw t0, 0(sp)\n";        // tira o num da pilha e coloca em t1
+        res += "lw t2, (t1)\n";
+        res += "sub t0, t2, t0\n";
+        res += "sw t0, (t1)\n";
+        res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
+
     } else if(operacao == "store_imm"){
         res += "li t0, " + id + '\n';  // coloca o valor de var em t0
         res += "addi sp, sp, -4\n";     // reserva 4 bytes na pilha

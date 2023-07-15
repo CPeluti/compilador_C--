@@ -1,13 +1,14 @@
 let
     integer teste,a,b
 in
-    a := 2
-    b := 3
+    a := 2 b := 3
     teste := a+b
+    b-=a
     while a > 0 do
-        b := b + 1
-        a := a - 1
+        b++
+        a--
         write a endl
+        write b endl
     end
-    write b
+    write teste+b
 end

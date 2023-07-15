@@ -72,7 +72,7 @@ struct lbs *lbls;
 %token <lbls> IF WHILE /* For backpatching labels */
 %token SKIP THEN ELSE FI DO END
 %token INTEGER READ WRITE ENDL LET IN
-%token ATRIBUICAO
+%token ATRIBUICAO INCREMENT DECREMENT EQUALSUM EQUALSUB
 
 %left '-' '+'
 %left '*' '/'
@@ -99,8 +99,12 @@ command : SKIP                              {check_context();}
 | READ IDENTIFIER                           {code_generator.gen_code("read", *$2);}
 | WRITE exp {code_generator.gen_code("write");} endl                    
 | IDENTIFIER ATRIBUICAO exp                 {code_generator.gen_code("assign", *$1);}
-| IF{set_context('i');} exp THEN{code_generator.gen_code("check", "else_"+context.top());} commands ELSE{code_generator.gen_code("label", "else_"+context.top());} commands FI{end_context('e');}
+| IF{set_context('i');} exp THEN{code_generator.gen_code("check", "else_"+context.top());} commands ELSE{code_generator.gen_code("label", "else_"+context.top());} commands END{end_context('e');}
 | WHILE{set_context('w');} exp DO{code_generator.gen_code("check", "end_"+context.top());} commands END{end_context();}
+| IDENTIFIER INCREMENT                      {code_generator.gen_code("++", *$1);}
+| IDENTIFIER DECREMENT                      {code_generator.gen_code("--", *$1);}
+| IDENTIFIER EQUALSUM exp                   {code_generator.gen_code("+=", *$1);}
+| IDENTIFIER EQUALSUB exp                   {code_generator.gen_code("-=", *$1);}
 ;
 endl: 
 | ENDL{code_generator.gen_code("endl");}

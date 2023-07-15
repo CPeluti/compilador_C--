@@ -70,7 +70,11 @@ extern int yydebug;
     ENDL = 271,                    /* ENDL  */
     LET = 272,                     /* LET  */
     IN = 273,                      /* IN  */
-    ATRIBUICAO = 274               /* ATRIBUICAO  */
+    ATRIBUICAO = 274,              /* ATRIBUICAO  */
+    INCREMENT = 275,               /* INCREMENT  */
+    DECREMENT = 276,               /* DECREMENT  */
+    EQUALSUM = 277,                /* EQUALSUM  */
+    EQUALSUB = 278                 /* EQUALSUB  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -85,7 +89,7 @@ std::string *intval;
 std::string *id;
 struct lbs *lbls;
 
-#line 89 "sintaxe.tab.h"
+#line 93 "sintaxe.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

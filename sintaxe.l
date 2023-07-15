@@ -11,6 +11,10 @@ letra	[a-zA-Z]
 %%
 
 ":="	          {return (ATRIBUICAO);}
+"++"            {return (INCREMENT);}
+"--"            {return (DECREMENT);}
+"+="            {return (EQUALSUM);}
+"-="            {return (EQUALSUB);}
 {digito}+	    {yylval.intval = new std::string(yytext); return(NUMBER);}
 do              {return (DO);}
 else            {return (ELSE);}
