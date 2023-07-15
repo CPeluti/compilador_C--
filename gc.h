@@ -1,7 +1,9 @@
 #include<string>
+#include<vector>
 class GC 
 {
     public:
-        std::string gen_code(std::string operacao, int var=NULL, std::string id=NULL);
+        std::vector<std::string> code;
+        void gen_code(std::string operacao, std::string id="");
         
 };

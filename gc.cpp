@@ -1,15 +1,33 @@
 #include<string>
-
-std::string gen_code(std::string operacao, int var=NULL, std::string id=NULL){
+#include "gc.h"
+void GC::gen_code(std::string operacao, std::string id){
     std::string res="";
-    if(operacao == "assign"){
-        res += "la a1, " + id + '\n';   // coloca o endereço do id em a1
-        res += "li t0, " + var + '\n';  // coloca o valor de var em t0
-        res += "sw t0, (a1)\n";         // coloca o valor de t0 no endereco de id (que esta em a1)
+    if(operacao == "data"){
+        res += ".data\n";
 
-    } else if(operacao == "if"){
-        res += "li t0, " + var + '\n';  // coloca o valor de var em t0
-        res += "bnez t0, ?????"
+    } else if(operacao == "text"){
+        res += ".text\n";
+
+    } else if(operacao == "end"){
+        res += "li a7, 10\n";
+        res += "ecall\n";
+
+    } else if(operacao == "jump"){
+        res += "j " + id + '\n';
+
+    } else if(operacao == "assign"){
+        res += "la a0, " + id + '\n';    // coloca o endereco de id em a0
+        res += "lw t0, 0(sp)\n";        // tira o num da pilha e coloca em a0
+        res += "sw t0, (a0)\n";         // coloca o valor de t0 no endereco de id (que esta em a1)
+        res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
+
+    } else if(operacao == "check"){
+        res += "lw t0, 0(sp)\n";            // tira o num da pilha e coloca em a0
+        res += "addi sp, sp, 4\n";          // devolve 4 bytes na pilha
+        res += "beqz t0, " + id + '\n'; // compara t0 com 0 e
+
+    } else if(operacao == "label"){
+        res += id + ":\n";
 
     } else if(operacao == "read"){
         res += "li a7, 5\n";            // coloca o valor 5 em a7 (read int)
@@ -18,17 +36,18 @@ std::string gen_code(std::string operacao, int var=NULL, std::string id=NULL){
         res += "lw a0, 0(a1)\n";        // coloca o valor lido no endereco do id
 
     } else if(operacao == "write"){
+        res += "lw a0, 0(sp)\n";        // tira o num da pilha e coloca em a0
         res += "li a7, 1\n";            // coloca o valor 1 em a7 (print int)
-        res += "li a0, " + var + '\n';   // coloca o valor de var em a0
         res += "ecall\n";               
+        res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
 
     } else if(operacao == "store_imm"){
-        res += "li t0, " + var + '\n';  // coloca o valor de var em t0
+        res += "li t0, " + id + '\n';  // coloca o valor de var em t0
         res += "addi sp, sp, -4\n";     // reserva 4 bytes na pilha
         res += "sw t0, 0(sp)\n";        // coloca o valor de t0 na pilha
 
     } else if(operacao == "store"){
-        res += "la t0, " + var + '\n';  // coloca o endereco de var em t0
+        res += "la t0, " + id + '\n';  // coloca o endereco de var em t0
         res += "addi sp, sp, -4\n";     // reserva 4 bytes na pilha
         res += "lw t0, 0(t0)\n";        // coloca o valor do endereco de var (que estah em t0) em t0
         res += "sw t0, 0(sp)\n";        // coloca o valor de t0 na pilha
@@ -41,11 +60,10 @@ std::string gen_code(std::string operacao, int var=NULL, std::string id=NULL){
         res += "sw t0, 0(sp)\n";        // coloca o resultado de t0 na pilha
 
     } else if(operacao == "equal"){
-        res += "lw t0, 0(sp)\n";        // tira o num da pilha e coloca em t0
-        res += "neg t1, t0\n";          // nega t0 e coloca em t1
+        res += "lw t0, 4(sp)\n";        // tira o num da pilha e coloca em t0
+        res += "lw t1, 0(sp)\n";        // tira o num da pilha e coloca em t1
         res += "sub t0, t0, t1\n";      // subtrai os dois nums e coloca o resultado em t0
-        res += "seqz t0, t0";           // checa se t0 eh 0
-        //res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
+        res += "seqz t0, t0\n";         // checa se t0 eh 0
         res += "sw t0, 0(sp)\n";        // coloca o resultado de t0 na pilha
 
     } else if(operacao == "greater"){
@@ -95,5 +113,5 @@ std::string gen_code(std::string operacao, int var=NULL, std::string id=NULL){
         res += "sw t0, 0(sp)\n";        // coloca o resultado de t0 (exponeciacao) na pilha
     }
 
-    return res;
+    return code.push_back(res);
 }

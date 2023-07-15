@@ -1,26 +1,62 @@
 %{
     #include <bits/stdc++.h>
     #include "st.h"
+    #include "gc.h"
     extern FILE *yyin;
     extern FILE *yyout;
     ST symbol_table;
+    GC code_generator;
+
     int yylex(void);
+    int while_counter = 0;
+    int if_counter = 0;
+    std::stack<std::string> context;
+    void set_context(char f){
+        std::string s = "";
+        switch(f){
+            case 'w':
+                s= "while_"+std::to_string(while_counter++);
+                break;
+            case 'i':
+                s= "if_"+std::to_string(if_counter++);
+                break;
+        }
+        code_generator.gen_code("label", s);
+        context.push(s);
+    }
+    void end_context(char f='w'){
+        std::string s= "end_"+context.top();
+        if(f=='w'){
+            code_generator.gen_code("jump", context.top());
+        }
+        code_generator.gen_code("label", s);
+        context.pop();
+    }
+    void check_context(){
+        if(context.size() == 0){
+            std::cout << "Skip cannot be used out of an while" << std::endl;
+        } else {
+            code_generator.gen_code("jump", context.top());
+        }
+    }
     void yyerror(const char *);
+    void parse_sym_table(ST symbol_table){}
     void install (std::string* sym_name)
     {
-        bool s = symbol_table.exist_symbol(*sym_name);
+        std::string var_name = "var_"+*sym_name;
+        bool s = symbol_table.exist_symbol(var_name);
         if(!s){
             std::cout << "Não existe" << std::endl;
-            symbol_table.insert_symbol(*sym_name);
+            symbol_table.insert_symbol(var_name);
 
         }else 
-            std::cout << *sym_name << " " << "is already defined" << std::endl;
+            std::cout << var_name << " " << "is already defined" << std::endl;
     }
 %}
 
 
 %union {
-int intval;
+std::string *intval;
 std::string *id;
 struct lbs *lbls;
 }
@@ -38,22 +74,13 @@ struct lbs *lbls;
 %left '*' '/'
 %right '^'
 
-
-/* procedencias */
-/* %left "&&" "||"
-%right '!'
-%left '<' '<=' ">" ">=" 
-%left "==" "!="
-%left '+' '-'
-%left '*' '/' */
-
 %%
 
-program : LET {;}
+program : LET {code_generator.gen_code("data");}
             declarations 
-        IN {;}
+        IN {parse_sym_table(symbol_table);code_generator.gen_code("text");}
             commands 
-        END {;}
+        END {code_generator.gen_code("end");}
 ;
 declarations : /* empty */
 | INTEGER id_seq IDENTIFIER '.' {install($3);}
@@ -64,23 +91,23 @@ id_seq : /* empty */
 commands : /* empty */
 | commands command ';'
 ;
-command : SKIP
-| READ IDENTIFIER                           {gen_code("read", NULL, $2);}
-| WRITE exp                                 {gen_code("write", $2);}
-| IDENTIFIER ATRIBUICAO exp                 {gen_code("assign", $3, $1);}
-| IF exp THEN commands ELSE commands FI     {gen_code("if", $2);}
-| WHILE exp DO commands END
+command : SKIP                              {check_context();}
+| READ IDENTIFIER                           {code_generator.gen_code("read", *$2);}
+| WRITE exp                                 {code_generator.gen_code("write");}
+| IDENTIFIER ATRIBUICAO exp                 {code_generator.gen_code("assign", *$1);}
+| IF{set_context('i');} exp THEN{code_generator.gen_code("check", "else_"+context.top());} commands ELSE{code_generator.gen_code("label", "else_"+context.top());} commands FI{end_context('e');}
+| WHILE{set_context('w');} exp DO{code_generator.gen_code("check", "end_"+context.top());} commands END{end_context();}
 ;
-exp : NUMBER    {gen_code("store_imm", $1);}
-| IDENTIFIER    {gen_code("store", $1);}
-| exp '<' exp   {gen_code("less");}
-| exp '=' exp   {gen_code("equal");}
-| exp '>' exp   {gen_code("greater");}
-| exp '-' exp   {gen_code("sub");}
-| exp '+' exp   {gen_code("add");}
-| exp '*' exp   {gen_code("mul");}
-| exp '/' exp   {gen_code("div");}
-| exp '^' exp   {gen_code("pow");}
+exp : NUMBER    {code_generator.gen_code("store_imm", *$1);}
+| IDENTIFIER    {code_generator.gen_code("store", *$1);}
+| exp '<' exp   {code_generator.gen_code("less");}
+| exp '=' exp   {code_generator.gen_code("equal");}
+| exp '>' exp   {code_generator.gen_code("greater");}
+| exp '-' exp   {code_generator.gen_code("sub");}
+| exp '+' exp   {code_generator.gen_code("add");}
+| exp '*' exp   {code_generator.gen_code("mul");}
+| exp '/' exp   {code_generator.gen_code("div");}
+| exp '^' exp   {code_generator.gen_code("pow");}
 | '(' exp ')'
 ;
 
@@ -113,6 +140,9 @@ int main (int argc, char **argv)
 		yyout = stdout;
 
 	yyparse();
+    for(int i = 0; i<code_generator.code.size(); i++){
+        std::cout << code_generator.code[i] << std::endl;
+    }
     /* for(auto it = tabela.cbegin(); it != tabela.cend(); ++it){
         std::cout << it->second.first << " " << it->second.second << std::endl;
     } */

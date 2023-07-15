@@ -764,7 +764,7 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 14 "sintaxe.l"
-{yylval.intval = atoi(yytext); return(NUMBER);}
+{yylval.intval = new std::string(yytext); return(NUMBER);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP

@@ -11,7 +11,7 @@ letra	[a-zA-Z]
 %%
 
 ":="	          {return (ATRIBUICAO);}
-{digito}+	    {yylval.intval = atoi(yytext); return(NUMBER);}
+{digito}+	    {yylval.intval = new std::string(yytext); return(NUMBER);}
 do              {return (DO);}
 else            {return (ELSE);}
 end             {return (END);}

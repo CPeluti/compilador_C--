@@ -78,9 +78,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 22 "sintaxe.y"
+#line 58 "sintaxe.y"
 
-int intval;
+std::string *intval;
 std::string *id;
 struct lbs *lbls;
 
