@@ -1,5 +1,6 @@
 #include<string>
 #include "gc.h"
+int counter = 0;
 void GC::gen_code(std::string operacao, std::string id){
     std::string res="";
     if(operacao == "data"){
@@ -138,16 +139,17 @@ void GC::gen_code(std::string operacao, std::string id){
         res += "sw t0, 0(sp)\n";        // coloca o resultado de t0 (divisão) na pilha
 
     } else if(operacao == "pow"){
+        std::string loop_tag = "loop_" + std::to_string(counter++);
         res += "lw t0, 4(sp)\n";        // tira o primeiro num da pilha e coloca em t0
         res += "lw t1, 0(sp)\n";        // tira o segundo num da pilha e coloca em t1
         res += "addi t1, t1, -1\n";     // t1--
         res += "mv t3, t0\n";
-
-        res += "beqz t1, 16\n";         // se t1 chegar a 0 acaba
+        res += loop_tag+":\n";
+        res += "beqz t1, end_"+loop_tag+"\n";         // se t1 chegar a 0 acaba
         res += "mul t3, t0, t3\n";      // multiplica t0 com ele mesmo
         res += "addi t1, t1, -1\n";     // t1--
-        res += "jal t4, -12\n";         // volta a comparacao
-        
+        res += "jal t4, "+loop_tag+"\n";         // volta a comparacao
+        res += "end_"+loop_tag+":\n";
         res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
         res += "sw t3, 0(sp)\n";        // coloca o resultado de t0 (exponeciacao) na pilha
     }

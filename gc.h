@@ -6,4 +6,5 @@ class GC
         std::vector<std::string> code;
         void gen_code(std::string operacao, std::string id="");
         
+        
 };
