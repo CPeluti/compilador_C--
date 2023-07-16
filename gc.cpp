@@ -140,13 +140,16 @@ void GC::gen_code(std::string operacao, std::string id){
     } else if(operacao == "pow"){
         res += "lw t0, 4(sp)\n";        // tira o primeiro num da pilha e coloca em t0
         res += "lw t1, 0(sp)\n";        // tira o segundo num da pilha e coloca em t1
-        res += "subi t1, t1, 1\n";      // t1--
-        res += "loop_pow: beqz t1, 16\n";// se t1 chegar a 0 acaba
-        res += "mul t0, t0, t0\n";      // multiplica t0 com ele mesmo
-        res += "subi t1, t1, 1\n";      // t1--
-        res += "jal t3, -16\n";         // volta a comparacao
+        res += "addi t1, t1, -1\n";     // t1--
+        res += "mv t3, t0\n";
+
+        res += "beqz t1, 16\n";         // se t1 chegar a 0 acaba
+        res += "mul t3, t0, t3\n";      // multiplica t0 com ele mesmo
+        res += "addi t1, t1, -1\n";     // t1--
+        res += "jal t4, -12\n";         // volta a comparacao
+        
         res += "addi sp, sp, 4\n";      // devolve 4 bytes na pilha
-        res += "sw t0, 0(sp)\n";        // coloca o resultado de t0 (exponeciacao) na pilha
+        res += "sw t3, 0(sp)\n";        // coloca o resultado de t0 (exponeciacao) na pilha
     }
 
     return code.push_back(res);

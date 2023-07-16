@@ -1,0 +1,6 @@
+let
+    integer counter
+in
+    counter := 2^3
+    write counter endl
+end
